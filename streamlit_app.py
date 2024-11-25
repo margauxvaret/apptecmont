@@ -20,7 +20,7 @@ data = load_data()
 
 # Barre latérale pour la navigation
 st.sidebar.title("Navigation")
-menu = st.sidebar.radio("Menu", ["Accueil", "EDA", "Graphiques Interactifs", "Insights", "Analyse Régionale"])
+menu = st.sidebar.radio("Menu", ["Accueil", "Différentes saveurs", "Graphiques Interactifs", "Temps préparation", "Analyse Régionale"])
 
 # Titre principal
 st.markdown(
@@ -38,8 +38,8 @@ if menu == "Accueil":
     st.write("Cette application vous permet d'explorer un ensemble de données sur la cuisine indienne.")
     st.write("Naviguez dans les sections pour explorer les données et découvrir des insights !")
 
-# Page : EDA (Exploration des données)
-elif menu == "EDA":
+# Page : Différentes saveurs
+elif menu == "Différentes saveurs":
     st.subheader("Exploration des données (EDA)")
     st.write("Aperçu des données :")
     st.write(data.head())
@@ -83,8 +83,8 @@ elif menu == "Graphiques Interactifs":
     )
     st.plotly_chart(fig_bar_diet, use_container_width=True)
 
-# Page : Insights
-elif menu == "Insights":
+# Page : Temps préparation
+elif menu == "Temps préparation":
     st.subheader("Insights")
 
     # Graphique en ligne : Évolution cumulative du temps de préparation par index
