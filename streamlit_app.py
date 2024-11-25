@@ -20,7 +20,7 @@ data = load_data()
 
 # Barre latérale pour la navigation
 st.sidebar.title("Navigation")
-menu = st.sidebar.radio("Menu", ["Accueil", "EDA", "Graphiques Interactifs", "Insights"])
+menu = st.sidebar.radio("Menu", ["Accueil", "EDA", "Graphiques Interactifs", "Insights", "Analyse Régionale"])
 
 # Titre principal
 st.markdown(
@@ -44,8 +44,8 @@ elif menu == "EDA":
     st.write("Aperçu des données :")
     st.write(data.head())
 
-    # Graphique interactif : Nombre de plats par région
-    st.subheader("Nombre de plats par région")
+    # Graphique : Répartition des plats par région
+    st.subheader("Répartition des plats par région")
     region_counts = data['region'].value_counts()
     fig = px.bar(
         x=region_counts.index, 
@@ -86,6 +86,17 @@ elif menu == "Graphiques Interactifs":
     )
     st.plotly_chart(fig, use_container_width=True)
 
+    # Graphique : Nombre de plats par état de plat (snack, plat principal, etc.)
+    st.subheader("Nombre de plats par état de plat")
+    state_counts = filtered_data['state'].value_counts()
+    fig_state = px.bar(
+        x=state_counts.index,
+        y=state_counts.values,
+        labels={'x': 'État de plat', 'y': 'Nombre de plats'},
+        title="Répartition des plats par état"
+    )
+    st.plotly_chart(fig_state, use_container_width=True)
+
 # Page : Insights
 elif menu == "Insights":
     st.subheader("Insights")
@@ -98,3 +109,45 @@ elif menu == "Insights":
         labels={"x": "Type de régime", "y": "Temps moyen de préparation (minutes)"}
     )
     st.plotly_chart(fig, use_container_width=True)
+
+    # Graphique : Durée moyenne de cuisson par région
+    st.subheader("Durée moyenne de cuisson par région")
+    avg_cook_time_by_region = data.groupby("region")["cook_time"].mean().dropna()
+    fig_cook = px.bar(
+        avg_cook_time_by_region,
+        x=avg_cook_time_by_region.index,
+        y=avg_cook_time_by_region.values,
+        labels={"x": "Région", "y": "Durée moyenne de cuisson (minutes)"},
+        title="Durée moyenne de cuisson par région"
+    )
+    st.plotly_chart(fig_cook, use_container_width=True)
+
+# Page : Analyse Régionale
+elif menu == "Analyse Régionale":
+    st.subheader("Analyse régionale des plats")
+
+    # Graphique : Répartition des régimes par région
+    st.subheader("Répartition des régimes par région")
+    region_diet = data.groupby(['region', 'diet']).size().reset_index(name='count')
+    fig_region_diet = px.bar(
+        region_diet,
+        x='region',
+        y='count',
+        color='diet',
+        labels={'count': 'Nombre de plats', 'region': 'Région', 'diet': 'Type de régime'},
+        title="Répartition des régimes par région"
+    )
+    st.plotly_chart(fig_region_diet, use_container_width=True)
+
+    # Graphique : Répartition des profils de saveurs par région
+    st.subheader("Répartition des profils de saveurs par région")
+    region_flavor = data.groupby(['region', 'flavor_profile']).size().reset_index(name='count')
+    fig_region_flavor = px.bar(
+        region_flavor,
+        x='region',
+        y='count',
+        color='flavor_profile',
+        labels={'count': 'Nombre de plats', 'region': 'Région', 'flavor_profile': 'Profil de saveur'},
+        title="Répartition des profils de saveurs par région"
+    )
+    st.plotly_chart(fig_region_flavor, use_container_width=True)
