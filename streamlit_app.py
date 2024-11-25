@@ -40,7 +40,7 @@ if menu == "Accueil":
 
 # Page : Différentes saveurs
 elif menu == "Différentes saveurs":
-    st.subheader("Exploration des données (EDA)")
+    st.subheader("Différentes saveurs")
     st.write("Aperçu des données :")
     st.write(data.head())
 
@@ -85,7 +85,7 @@ elif menu == "Graphiques Interactifs":
 
 # Page : Temps préparation
 elif menu == "Temps préparation":
-    st.subheader("Insights")
+    st.subheader("Temps préparation")
 
     # Graphique en ligne : Évolution cumulative du temps de préparation par index
     st.subheader("Temps de préparation cumulatif")
