@@ -47,7 +47,6 @@ elif menu == "EDA":
     # Graphique circulaire : Distribution des profils de saveurs
     st.subheader("Distribution des profils de saveurs")
     flavor_counts = data['flavor_profile'].value_counts()
-    st.write(f"Profils de saveurs disponibles : {', '.join(data['flavor_profile'].dropna().unique())}")
     fig_pie_flavor = px.pie(
         names=flavor_counts.index, 
         values=flavor_counts.values,
@@ -60,9 +59,10 @@ elif menu == "EDA":
 elif menu == "Graphiques Interactifs":
     st.subheader("Graphiques interactifs")
 
-    # Graphique en barres : Nombre de plats par région
+    # Curseur : Limiter les régions affichées
     st.subheader("Nombre de plats par région")
-    region_counts = data['region'].value_counts()
+    num_regions = st.slider("Nombre maximum de régions à afficher :", 1, len(data['region'].unique()), 5)
+    region_counts = data['region'].value_counts().head(num_regions)
     fig_bar_region = px.bar(
         x=region_counts.index, 
         y=region_counts.values,
@@ -71,9 +71,10 @@ elif menu == "Graphiques Interactifs":
     )
     st.plotly_chart(fig_bar_region, use_container_width=True)
 
-    # Graphique en barres : Distribution des types de régimes
+    # Curseur : Limiter les types de régimes affichés
     st.subheader("Distribution des types de régimes")
-    diet_counts = data['diet'].value_counts()
+    num_diets = st.slider("Nombre maximum de types de régimes à afficher :", 1, len(data['diet'].unique()), 2)
+    diet_counts = data['diet'].value_counts().head(num_diets)
     fig_bar_diet = px.bar(
         x=diet_counts.index,
         y=diet_counts.values,
