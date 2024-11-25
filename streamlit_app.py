@@ -20,7 +20,7 @@ data = load_data()
 
 # Barre latérale pour la navigation
 st.sidebar.title("Navigation")
-menu = st.sidebar.radio("Menu", ["Accueil", "Différentes saveurs", "Graphiques Interactifs", "Temps préparation", "Analyse Régionale"])
+menu = st.sidebar.selectbox("Menu", ["Accueil", "Différentes saveurs", "Graphiques Interactifs", "Temps préparation", "Analyse Régionale"])
 
 # Titre principal
 st.markdown(
