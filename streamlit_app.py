@@ -47,6 +47,7 @@ elif menu == "EDA":
     # Graphique circulaire : Distribution des profils de saveurs
     st.subheader("Distribution des profils de saveurs")
     flavor_counts = data['flavor_profile'].value_counts()
+    st.write(f"Profils de saveurs disponibles : {', '.join(data['flavor_profile'].dropna().unique())}")
     fig_pie_flavor = px.pie(
         names=flavor_counts.index, 
         values=flavor_counts.values,
@@ -57,64 +58,50 @@ elif menu == "EDA":
 
 # Page : Graphiques Interactifs
 elif menu == "Graphiques Interactifs":
-    st.subheader("Analyse interactive")
+    st.subheader("Graphiques interactifs")
 
-    # Nuage de points : Temps de préparation vs Temps de cuisson
-    st.subheader("Temps de préparation vs Temps de cuisson")
-    fig_scatter = px.scatter(
-        data,
-        x="prep_time",
-        y="cook_time",
-        color="diet",
-        size="cook_time",
-        hover_data=["name"],
-        title="Relation entre le temps de préparation et de cuisson",
-        labels={"prep_time": "Temps de préparation (minutes)", "cook_time": "Temps de cuisson (minutes)"}
+    # Graphique en barres : Nombre de plats par région
+    st.subheader("Nombre de plats par région")
+    region_counts = data['region'].value_counts()
+    fig_bar_region = px.bar(
+        x=region_counts.index, 
+        y=region_counts.values,
+        labels={'x': 'Région', 'y': 'Nombre de plats'},
+        title="Nombre de plats par région"
     )
-    st.plotly_chart(fig_scatter, use_container_width=True)
+    st.plotly_chart(fig_bar_region, use_container_width=True)
 
-    # Graphique circulaire : Répartition des régimes
-    st.subheader("Répartition des régimes")
+    # Graphique en barres : Distribution des types de régimes
+    st.subheader("Distribution des types de régimes")
     diet_counts = data['diet'].value_counts()
-    fig_pie_diet = px.pie(
-        names=diet_counts.index, 
-        values=diet_counts.values,
-        title="Répartition des régimes (Végétarien vs Non Végétarien)"
+    fig_bar_diet = px.bar(
+        x=diet_counts.index,
+        y=diet_counts.values,
+        labels={'x': 'Type de régime', 'y': 'Nombre de plats'},
+        title="Distribution des types de régimes"
     )
-    st.plotly_chart(fig_pie_diet, use_container_width=True)
+    st.plotly_chart(fig_bar_diet, use_container_width=True)
 
 # Page : Insights
 elif menu == "Insights":
     st.subheader("Insights")
 
-    # Graphique en ligne : Évolution du temps de préparation (cumulatif)
-    st.subheader("Évolution cumulative du temps de préparation par type de régime")
-    cumulative_prep_time = data.groupby("diet")["prep_time"].cumsum()
-    data["cumulative_prep_time"] = cumulative_prep_time
-    fig_line = px.line(
-        data,
-        x=data.index,
-        y="cumulative_prep_time",
-        color="diet",
-        title="Temps de préparation cumulatif",
-        labels={"cumulative_prep_time": "Temps cumulatif (minutes)"}
-    )
-    st.plotly_chart(fig_line, use_container_width=True)
+    # Graphique en ligne : Évolution cumulative du temps de préparation par index
+    st.subheader("Temps de préparation cumulatif")
+    data_sorted = data.sort_values(by="prep_time", ascending=True)
+    data_sorted['prep_time_cumsum'] = data_sorted['prep_time'].cumsum()
+    st.line_chart(data_sorted['prep_time_cumsum'])
 
 # Page : Analyse Régionale
 elif menu == "Analyse Régionale":
     st.subheader("Analyse régionale des plats")
 
-    # Graphique à bulles : Nombre de plats par région et type de régime
-    st.subheader("Analyse des plats par région et type de régime")
-    bubble_data = data.groupby(['region', 'diet']).size().reset_index(name='count')
-    fig_bubble = px.scatter(
-        bubble_data,
-        x="region",
-        y="diet",
-        size="count",
-        color="region",
-        title="Nombre de plats par région et régime",
-        labels={"count": "Nombre de plats", "region": "Région", "diet": "Type de régime"}
+    # Graphique circulaire : Nombre de plats par région
+    st.subheader("Répartition des plats par région")
+    region_counts = data['region'].value_counts()
+    fig_pie_region = px.pie(
+        names=region_counts.index,
+        values=region_counts.values,
+        title="Proportion des plats par région"
     )
-    st.plotly_chart(fig_bubble, use_container_width=True)
+    st.plotly_chart(fig_pie_region, use_container_width=True)
